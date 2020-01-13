@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'share/navbar.html' %}
+
+<select style="float: right;" id="sort-select" onchange="location = this.value;">
+  <option class="sort-Likes" value="?sort=Likes">좋아요순</option>
+  <option class="sort-level" value="?sort=level">혼밥레벨순</option>
+</select>
+
+<style type="text/css">
+        .buttons {
+            font color: white;
+            padding-top : 30px;
+           }
+</style>
+
+{% for honbab in Honbab %}
+<center>
+<div class="card" style= "width:70%; height:17%; margin-bottom:10%; margin-top:10%;">
+  <h5 class="card-header" style = "text-align:left;">{{honbab.restraunt}}</h5>
+  <div class="card-body">
+    <h5 class="card-title" style = "text-align:left;">Lv.{{honbab.level}}</h5>
+    <pre class="card-text" style = "text-align:left;">{{honbab.menu}}.</pre>
+      <img src= {{honbab.img}} id="imagepreview" style="width: 80%; height : 80%;" alt="...">
+    <div class = buttons><a class="btn btn-primary" data-target="#modal" data-toggle="modal">쿠폰 받기</a></div>
+<h5 style ="text-align:right;"><li>
+         <a href="{% url 'Honbab:resturant_like' honbab.pk %}">{{ honbab.like_user_set.count }} like{{ honbab.like_user_set.count|pluralize }} </a>
+         {% for like_user in post.like_user_set.all %}
+         {{ like_user.profile.nickname }}
+         {% endfor %} 
+      </li>  </h5>
+    
+</div>
+</div>
+    </center>
+    
+    
+     <div class="row">
+        <div class= "modal" id="modal" tabindex="-1">
+            <div class= "modal-dialog">
+                <div class= "modal-content">
+                    <div class= "modal-header">
+                        <h5 class="modal title" id="modallabel">쿠폰 받기</h5>
+                        <button class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        
+                        </div>
+                    <div class="modal-body" style="text-align: center;">
+ <input type="text" name="Phone Number" class="form-control" placeholder="01012345678">
+                        <hr/>
+                        <p style = "text-align:left;">휴대폰 번호를 입력하신 후 '쿠폰받기'를 클릭해주세요.</p>
+                
+                        <span style = font-size:13px;><p style = "text-align:left;">- 쿠폰 내용이 들어갈 자리입니다.</p></span> 
+                    </div>
+                    <div class="modal-footer">
+                        <input type ="submit" class="btn btn-primary" value="쿠폰받기">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+    
+var getUrlParameter = function getUrlParameter(sParam) {
+var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+    sURLVariables = sPageURL.split('&'),
+    sParameterName,
+    i;
+
+for (i = 0; i < sURLVariables.length; i++) {
+    sParameterName = sURLVariables[i].split('=');
+
+    if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : sParameterName[1];
+    }
+}
+};
+    
+$(document).ready(function(){
+  var sort = getUrlParameter('sort');
+  if(sort == 'Likes'){
+    $('.sort-Likes').prop('selected', 'selected')
+  }else{
+    $('.sort-level').prop('selected', 'selected')
+  }
+});
+</script>
+
+{% endblock %}
+
